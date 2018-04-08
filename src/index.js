@@ -35,22 +35,39 @@ function renderContent(content) {
     contentDOM.style.color = content.color
 }
 
-// dispatch
-// 修改只能通过dispatch
-function dispatch(action) {
+/**
+ * @argument state:表示应用程序状态 
+ * @argument stateChanger:描述应用程序状态会根据 action 发生什么变化
+ * @return {getState} 返回state {dispatch} 用于修改数据
+ */
+function createStore(state, stateChanger) {
+    const getState = () => state;
+    const dispatch = (action) => stateChanger(state, action);
+    return { getState, dispatch };
+}
+
+/**
+ * @description 描述应用程序状态会根据 action 发生什么变化
+ * @param state 
+ * @param action 
+ */
+function stateChanger(state, action) {
     switch (action.type) {
         case 'UPDATE_TITLE_TEXT':
-            appState.title.text = action.text
-            break
+            state.title.text = action.text;
+            break;
         case 'UPDATE_TITLE_COLOR':
-            appState.title.color = action.color
-            break
+            state.title.color = action.color;
+            break;
         default:
-            break
+            break;
     }
 }
 
+const store = createStore(appState, stateChanger)
+
+
 renderApp(appState);
-dispatch({ type: 'UPDATE_TITLE_TEXT', text: '《React.js》' }) // 修改标题文本
-dispatch({ type: 'UPDATE_TITLE_COLOR', color: 'blue' }) // 修改标题颜色
+store.dispatch({ type: 'UPDATE_TITLE_TEXT', text: '《React.js》' }) // 修改标题文本
+store.dispatch({ type: 'UPDATE_TITLE_COLOR', color: 'blue' }) // 修改标题颜色
 renderApp(appState);
