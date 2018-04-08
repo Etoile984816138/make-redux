@@ -18,24 +18,21 @@ const appState = {
 }
 
 // 渲染内容
-function renderApp(oldState, newState) {
-    if (newState === oldState) return;
-    renderTitle(appState, newState)
-    renderContent(appState, newState)
+function renderApp(state) {
+    renderTitle(state)
+    renderContent(state)
 }
 
-function renderTitle(oldState, newState) {
-    if (newState === oldState) return;
+function renderTitle(state) {
     const titleDOM = document.getElementById('title');
-    titleDOM.innerHTML = newState.title.text;
-    titleDOM.style.color = newState.title.color;
+    titleDOM.innerHTML = state.title.text;
+    titleDOM.style.color = state.title.color;
 }
 
-function renderContent(oldState, newState) {
-    if (newState === oldState) return;
+function renderContent(state) {
     const contentDOM = document.getElementById('content');
-    contentDOM.innerHTML = newState.content.text;
-    contentDOM.style.color = newState.content.color;
+    contentDOM.innerHTML = state.content.text;
+    contentDOM.style.color = state.content.color;
 }
 
 /**
@@ -89,10 +86,11 @@ const store = createStore(appState, stateChanger);
 let oldState = store.getState();
 store.subscribe(() => {
     const newState = store.getState(); // 获取新的state
-    renderApp(oldState, newState);
+    if (oldState === newState) return;
+    renderApp(newState);
     oldState = newState;
 }); // 添加监听者
 
-renderApp({}, appState); // 首次渲染
+renderApp(appState); // 首次渲染
 store.dispatch({ type: 'UPDATE_TITLE_TEXT', text: '《React.js》' }) // 修改标题文本
 store.dispatch({ type: 'UPDATE_TITLE_COLOR', color: 'blue' }) // 修改标题颜色
