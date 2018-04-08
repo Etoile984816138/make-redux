@@ -1,4 +1,4 @@
-实现步骤见commit历史
+实现步骤见commit历史,主要文件在src/index.js中
 
 1. 创建store、dispatch
 2. 抽离store，抛出getState和dispatch方法
