@@ -37,15 +37,15 @@ function renderContent(state) {
 
 /**
  * @argument state:表示应用程序状态 
- * @argument stateChanger:描述应用程序状态会根据 action 发生什么变化
+ * @argument reducer:描述应用程序状态会根据 action 发生什么变化
  * @return {getState} 返回state {dispatch} 用于修改数据
  */
-function createStore(state, stateChanger) {
+function createStore(state, reducer) {
     const listeners = [];
     const subscribe = (listener) => listeners.push(listener);
     const getState = () => state;
     const dispatch = (action) => {
-        state = stateChanger(state, action);
+        state = reducer(state, action);
         listeners.forEach((listener) => listener()); // 每次dispatch时遍历监听者数组调用渲染函数
     }
     return { getState, dispatch, subscribe };
@@ -56,7 +56,7 @@ function createStore(state, stateChanger) {
  * @param state 
  * @param action 
  */
-function stateChanger(state, action) {
+function reducer(state, action) {
     switch (action.type) {
         case 'UPDATE_TITLE_TEXT':
             return {
@@ -66,7 +66,6 @@ function stateChanger(state, action) {
                     text: action.text
                 }
             }
-            break;
         case 'UPDATE_TITLE_COLOR':
             return {
                 ...state,
@@ -75,14 +74,12 @@ function stateChanger(state, action) {
                     color: action.color
                 }
             }
-            break;
         default:
             return state;
-            break;
     }
 }
 
-const store = createStore(appState, stateChanger);
+const store = createStore(appState, reducer);
 let oldState = store.getState();
 store.subscribe(() => {
     const newState = store.getState(); // 获取新的state
